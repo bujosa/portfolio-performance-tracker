@@ -1,0 +1,6 @@
+export enum EnvKey {
+  PORT = 'PORT',
+  MONGO_DB_URI = 'MONGO_DB_URI',
+  DB_NAME = 'DB_NAME',
+  COINMARKETCAP_API_KEY = 'COINMARKETCAP_API_KEY',
+}
