@@ -1,4 +1,3 @@
-import { AssetModule } from './asset/asset.module';
 import { Module } from '@nestjs/common';
 import { PortforlioModule } from './portfolio/portfolio.module';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -6,6 +5,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { EnvKey } from './common/data/config/env-key.enum';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
@@ -30,8 +30,8 @@ import { EnvKey } from './common/data/config/env-key.enum';
         };
       },
     }),
-    AssetModule,
     PortforlioModule,
+    TransactionModule,
   ],
   controllers: [],
   providers: [],
