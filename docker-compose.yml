@@ -1,0 +1,11 @@
+version: '3'
+services:
+  portfolioTracker:
+    image: portfolio-tracker
+    restart: 'always'
+    build:
+      target: portfolioTracker
+      context: .
+    ports:
+      - '3000:3000'
+    env_file: .env
