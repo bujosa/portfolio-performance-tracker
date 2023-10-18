@@ -1,0 +1,12 @@
+# Config files
+
+.env
+.git
+.gitignore
+.github
+.vscode
+
+# Node JS files
+
+node_modules
+dist
