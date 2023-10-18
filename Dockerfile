@@ -1,4 +1,4 @@
-FROM node:20.8.1-alpine3.14
+FROM node:20.8.1-alpine3.17 as portfolioTracker
 
 # Set the working directory within the container to /app.
 WORKDIR /app
