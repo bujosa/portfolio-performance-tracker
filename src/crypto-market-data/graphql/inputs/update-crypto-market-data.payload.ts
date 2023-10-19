@@ -1,7 +1,11 @@
 import { InputType, PartialType } from '@nestjs/graphql';
 import * as joi from 'joi';
 import { CreateCryptoMarketDataInput } from './create-crypto-market-data.input';
-import { validateNameWithJoi } from 'src/common/validation/strings';
+import {
+  validateISODateWithJoi,
+  validateNameWithJoi,
+} from 'src/common/validation/strings';
+import { validatePositiveNumberWithJoi } from 'src/common/validation/number';
 
 @InputType()
 export class UpdateCryptoMarketDataPayload extends PartialType(
@@ -9,7 +13,14 @@ export class UpdateCryptoMarketDataPayload extends PartialType(
 ) {
   public static validationSchema = joi
     .object<UpdateCryptoMarketDataPayload>({
-      name: validateNameWithJoi,
+      cryptoName: validateNameWithJoi,
+      open: validatePositiveNumberWithJoi,
+      high: validatePositiveNumberWithJoi,
+      low: validatePositiveNumberWithJoi,
+      close: validatePositiveNumberWithJoi,
+      marketCap: validatePositiveNumberWithJoi,
+      timestamp: validateISODateWithJoi('timestamp'),
+      date: validateISODateWithJoi('date'),
     })
     .min(1);
 }

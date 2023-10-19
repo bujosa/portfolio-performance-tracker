@@ -58,7 +58,7 @@ export class CryptoMarketData
     required: true,
     validate: validateIsoDate,
   })
-  timeStamp: string;
+  timestamp: string;
 
   @Prop({
     required: true,

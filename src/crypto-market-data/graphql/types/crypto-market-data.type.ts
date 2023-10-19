@@ -43,7 +43,7 @@ export class CryptoMarketData implements ICryptoMarketData {
     description:
       'Timestamp of the crypto currency when this data was taken, example 2021-01-01T00:00:00.000Z',
   })
-  timeStamp: string;
+  timestamp: string;
 
   @Field({
     description:

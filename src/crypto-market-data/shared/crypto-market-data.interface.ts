@@ -5,7 +5,7 @@ export interface ICryptoMarketData {
   low: number;
   close: number;
   marketCap: number;
-  timeStamp: string;
+  timestamp: string;
   cryptoName: string;
   date: string;
   createdAt: string;
