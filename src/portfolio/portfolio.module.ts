@@ -17,4 +17,4 @@ import { PortfolioResolver } from './portfolio.resolver';
   providers: [PortfolioService, PortfolioRepository, PortfolioResolver],
   exports: [MongooseModule],
 })
-export class PortforlioModule {}
+export class PortfolioModule {}
