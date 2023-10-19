@@ -7,6 +7,7 @@ import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { EnvKey } from './common/data/config/env-key.enum';
 import { TransactionModule } from './transaction/transaction.module';
 import { AssetModule } from './asset/asset.module';
+import { gqlErrorFormatter } from './common/errors/utils/gql-error-formatter.util';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AssetModule } from './asset/asset.module';
       driver: ApolloDriver,
       playground: true,
       autoSchemaFile: true,
+      formatError: gqlErrorFormatter,
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
