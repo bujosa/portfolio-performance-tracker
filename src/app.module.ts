@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PortforlioModule } from './portfolio/portfolio.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -8,6 +8,7 @@ import { EnvKey } from './common/data/config/env-key.enum';
 import { TransactionModule } from './transaction/transaction.module';
 import { AssetModule } from './asset/asset.module';
 import { gqlErrorFormatter } from './common/errors/utils/gql-error-formatter.util';
+import { CryptoMarketDataModule } from './crypto-market-data/crypto-market-data.module';
 
 @Module({
   imports: [
@@ -15,11 +16,16 @@ import { gqlErrorFormatter } from './common/errors/utils/gql-error-formatter.uti
       isGlobal: true,
       envFilePath: `.env`,
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
+      imports: [],
+      inject: [],
       driver: ApolloDriver,
-      playground: true,
-      autoSchemaFile: true,
-      formatError: gqlErrorFormatter,
+      useFactory: () => {
+        return {
+          autoSchemaFile: true,
+          formatError: gqlErrorFormatter,
+        };
+      },
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
@@ -34,7 +40,8 @@ import { gqlErrorFormatter } from './common/errors/utils/gql-error-formatter.uti
       },
     }),
     AssetModule,
-    PortforlioModule,
+    CryptoMarketDataModule,
+    PortfolioModule,
     TransactionModule,
   ],
   controllers: [],
