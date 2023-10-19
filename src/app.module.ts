@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { EnvKey } from './common/data/config/env-key.enum';
 import { TransactionModule } from './transaction/transaction.module';
+import { AssetModule } from './asset/asset.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TransactionModule } from './transaction/transaction.module';
         };
       },
     }),
+    AssetModule,
     PortforlioModule,
     TransactionModule,
   ],
