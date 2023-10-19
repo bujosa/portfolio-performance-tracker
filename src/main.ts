@@ -4,6 +4,7 @@ import { JoiValidationPipe } from './common/pipes';
 import { MongoSanitizeInterceptor } from './common/mongo/interceptors/mongo-sanitize.interceptor';
 import { ConfigService } from '@nestjs/config';
 import { EnvKey } from './common/data/config/env-key.enum';
+import { CustomExceptionsFilter } from './common/filters/custom.exception-filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,8 @@ async function bootstrap() {
 
   // Validate all inputs using Joi
   app.useGlobalPipes(new JoiValidationPipe());
+
+  app.useGlobalFilters(new CustomExceptionsFilter());
 
   const configService: ConfigService = app.get(ConfigService);
 
