@@ -18,6 +18,8 @@ import { EntityNotFoundError } from 'src/common/errors/entity-not-found.error';
 import { Portfolio } from '../entities';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdatePortfolioInput } from 'src/portfolio/graphql/inputs/update-portfolio.input';
+import { transactionDefaultOptions } from 'src/common/mongo/transaction.options';
+import { TransactionRepository } from 'src/transaction/repository/repositories/transaction.repository';
 
 @Injectable()
 export class PortfolioRepository {
@@ -30,6 +32,7 @@ export class PortfolioRepository {
   constructor(
     @InjectModel(Portfolio.name)
     readonly entityModel: Model<Portfolio>,
+    readonly transactionRepository: TransactionRepository,
   ) {}
 
   private async _getOneEntity(
@@ -194,15 +197,29 @@ export class PortfolioRepository {
     deleteEntityInput: Record<string, any>,
     session?: ClientSession,
   ): Promise<Portfolio> {
+    if (session === undefined) {
+      session = await this.entityModel.startSession(transactionDefaultOptions);
+    }
+
     try {
       const result = await this._getOneEntity(deleteEntityInput);
 
-      await result.save({ session, validateBeforeSave: false });
+      await session.withTransaction(async () => {
+        await Promise.all([
+          this.entityModel.deleteOne({ _id: result._id }, { session }),
+          this.transactionRepository.deleteManyEntities(
+            { portfolio: result._id },
+            session,
+          ),
+        ]);
+      });
 
-      return this._getOneEntity({ id: result.id }, session);
+      return result;
     } catch (error) {
       console.error(`${JSON.stringify(error)}`);
       throw error;
+    } finally {
+      await session.endSession();
     }
   }
 
