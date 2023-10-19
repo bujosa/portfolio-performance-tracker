@@ -4,6 +4,7 @@ import { CreatePortfolioInput } from './graphql/inputs/create-portfolio.input';
 import { IPortfolio } from './shared/portfolio.interface';
 import { PortfolioRepository } from './repository/repositories/portfolio.repository';
 import { UpdatePortfolioInput } from './graphql/inputs/update-portfolio.input';
+import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 
 @Injectable()
 export class PortfolioService {
@@ -32,7 +33,7 @@ export class PortfolioService {
   }
 
   public async deleteEntity(
-    getOneEntityInput: Record<string, any>,
+    getOneEntityInput: GetEntityByIdInput,
   ): Promise<IPortfolio> {
     return this.repository.deleteEntity(getOneEntityInput);
   }

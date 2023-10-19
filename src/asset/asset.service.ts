@@ -7,6 +7,7 @@ import { UpdateAssetInput } from './graphql/inputs/update-asset.input';
 import { getCoinPrice } from './shared/get_price';
 import { ConfigService } from '@nestjs/config';
 import { EnvKey } from 'src/common/data/config/env-key.enum';
+import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 
 @Injectable()
 export class AssetService {
@@ -28,6 +29,10 @@ export class AssetService {
   public async createEntity(
     createAssetInput: CreateAssetInput,
   ): Promise<IAsset> {
+    // if (createAssetInput.name == 'Food') {
+    //   throw new EntityNotFoundError('Food is not an asset');
+    // }
+
     return this.repository.createEntity(createAssetInput);
   }
 
@@ -38,7 +43,7 @@ export class AssetService {
   }
 
   public async deleteEntity(
-    getOneEntityInput: Record<string, any>,
+    getOneEntityInput: GetEntityByIdInput,
   ): Promise<IAsset> {
     return this.repository.deleteEntity(getOneEntityInput);
   }

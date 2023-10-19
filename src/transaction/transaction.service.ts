@@ -4,6 +4,7 @@ import { CreateTransactionInput } from './graphql/inputs/create-transaction.inpu
 import { ITransaction } from './shared/transaction.interface';
 import { TransactionRepository } from './repository/repositories/transaction.repository';
 import { UpdateTransactionInput } from './graphql/inputs/update-transaction.input';
+import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 
 @Injectable()
 export class TransactionService {
@@ -32,7 +33,7 @@ export class TransactionService {
   }
 
   public async deleteEntity(
-    getOneEntityInput: Record<string, any>,
+    getOneEntityInput: GetEntityByIdInput,
   ): Promise<ITransaction> {
     return this.repository.deleteEntity(getOneEntityInput);
   }

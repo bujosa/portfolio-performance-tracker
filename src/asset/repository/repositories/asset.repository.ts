@@ -17,6 +17,7 @@ import { EntityNotFoundError } from 'src/common/errors/entity-not-found.error';
 import { Asset } from '../entities';
 import { InjectModel } from '@nestjs/mongoose';
 import { validateAndGenerateSlug } from 'src/common/functions/validate-and-generate-slug';
+import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 
 @Injectable()
 export class AssetRepository {
@@ -187,7 +188,7 @@ export class AssetRepository {
   }
 
   public async deleteEntity(
-    deleteEntityInput: Record<string, any>,
+    deleteEntityInput: GetEntityByIdInput,
     session?: ClientSession,
   ): Promise<Asset> {
     try {

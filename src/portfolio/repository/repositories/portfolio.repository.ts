@@ -20,6 +20,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UpdatePortfolioInput } from 'src/portfolio/graphql/inputs/update-portfolio.input';
 import { transactionDefaultOptions } from 'src/common/mongo/transaction.options';
 import { TransactionRepository } from 'src/transaction/repository/repositories/transaction.repository';
+import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 
 @Injectable()
 export class PortfolioRepository {
@@ -193,8 +194,14 @@ export class PortfolioRepository {
     }
   }
 
+  /**
+   * @description Delete entity and all related transactions in a single transaction session
+   * @param deleteEntityInput - This is the entity id to be deleted
+   * @param session - This is a session for the transaction, if u wanna use an existing session
+   * @returns Portfolio - This is the deleted entity
+   */
   public async deleteEntity(
-    deleteEntityInput: Record<string, any>,
+    deleteEntityInput: GetEntityByIdInput,
     session?: ClientSession,
   ): Promise<Portfolio> {
     if (session === undefined) {

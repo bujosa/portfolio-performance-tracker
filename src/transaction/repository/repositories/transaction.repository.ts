@@ -19,6 +19,7 @@ import { EntityNotFoundError } from 'src/common/errors/entity-not-found.error';
 import { Transaction } from '../entities';
 import { InjectModel } from '@nestjs/mongoose';
 import { DeleteResult } from 'mongodb';
+import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 
 @Injectable()
 export class TransactionRepository {
@@ -183,7 +184,7 @@ export class TransactionRepository {
   }
 
   public async deleteEntity(
-    deleteEntityInput: Record<string, any>,
+    deleteEntityInput: GetEntityByIdInput,
     session?: ClientSession,
   ): Promise<Transaction> {
     try {
