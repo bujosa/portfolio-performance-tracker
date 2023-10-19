@@ -7,21 +7,28 @@ import {
 } from 'src/common/validation/strings';
 import { validateMongoIdWithJoi } from 'src/common/validation/id/id.validator';
 import * as joi from 'joi';
+import { CryptoAssetEnum } from 'src/performance-tracking/graphql/enums/crypto-asset.enum';
 
 @InputType({ description: 'Create transaction input' })
 export class CreateTransactionInput extends ValidationInput {
-  @Field({ description: 'Code of the asset. Example -> BTC/ETH/ADA' })
-  asset: string;
+  @Field(() => CryptoAssetEnum, {
+    description: 'Code of the asset. Example -> Bitcoin',
+  })
+  asset: CryptoAssetEnum;
 
-  @Field(() => Float, { description: 'Quantity of the asset. Example -> 1.5' })
+  @Field(() => Float, { description: 'Quantity of the asset. Example -> 0.25' })
   quantity: number;
 
-  @Field(() => Float, { nullable: true })
+  @Field(() => Float, {
+    nullable: true,
+    description:
+      'Price of the asset in the moment that you bought the crypto currency. Example -> 63987.24',
+  })
   price?: number;
 
   @Field({
     description:
-      'Date of the you bought the asset. Example -> 2021-01-01 or 2021-01-01T01:00:00.999Z',
+      'Date of the you bought the asset. Example -> 2021-10-19 or 2021-10-19T01:00:00.999Z',
   })
   date: string;
 
@@ -29,7 +36,10 @@ export class CreateTransactionInput extends ValidationInput {
   portfolio: string;
 
   public static validationSchema = joi.object<CreateTransactionInput>({
-    asset: validateNameWithJoi.required(),
+    asset: joi
+      .string()
+      .valid(...Object.values(CryptoAssetEnum))
+      .required(),
     quantity: validatePositiveNumberWithJoi.required(),
     price: validatePositiveNumberWithJoi,
     date: validateISODateWithJoi('date').required(),
