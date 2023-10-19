@@ -16,10 +16,13 @@ export class CreateTransactionInput extends ValidationInput {
   @Field(() => Float, { description: 'Quantity of the asset. Example -> 1.5' })
   quantity: number;
 
-  @Field()
+  @Field(() => Float, { nullable: true })
   price?: number;
 
-  @Field()
+  @Field({
+    description:
+      'Date of the you bought the asset. Example -> 2021-01-01 or 2021-01-01T01:00:00.999Z',
+  })
   date: string;
 
   @Field(() => ID)
