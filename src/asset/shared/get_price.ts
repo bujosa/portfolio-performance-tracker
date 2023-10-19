@@ -13,7 +13,7 @@ export async function getCoinPrice(symbol: string, apiKey: string) {
     );
     if (response.status === 200) {
       const data = response.data;
-      const cryptocurrency = data.data[symbol];
+      const cryptocurrency = data.data[symbol.toUpperCase()];
       if (cryptocurrency) {
         price = cryptocurrency.quote.USD.price;
         console.log(`Price of ${symbol}: $${price}`);
