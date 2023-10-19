@@ -9,6 +9,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { AssetModule } from './asset/asset.module';
 import { gqlErrorFormatter } from './common/errors/utils/gql-error-formatter.util';
 import { CryptoMarketDataModule } from './crypto-market-data/crypto-market-data.module';
+import { PerformanceTrackingModule } from './performance-tracking/performance-tracking.module';
 
 @Module({
   imports: [
@@ -41,10 +42,9 @@ import { CryptoMarketDataModule } from './crypto-market-data/crypto-market-data.
     }),
     AssetModule,
     CryptoMarketDataModule,
+    PerformanceTrackingModule,
     PortfolioModule,
     TransactionModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

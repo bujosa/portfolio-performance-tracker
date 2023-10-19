@@ -1,4 +1,4 @@
-# Portfolio Perfomance Tracker
+# Portfolio Performance Tracker
 
 ## Description
 
