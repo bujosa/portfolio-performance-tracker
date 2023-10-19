@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ClientSession, Model, Error as MongooseErrors } from 'mongoose';
 import { generateISODate } from 'src/common/functions/generate-iso-date-string.util';
-import { slugConfigType } from 'src/common/data/config/slugConfig.type';
 import { FilterInput } from 'src/common/graphql';
 import {
   CreateTransactionInput,
@@ -19,6 +18,7 @@ import { DuplicateKeyError } from 'src/common/errors/duplicate-key.error';
 import { EntityNotFoundError } from 'src/common/errors/entity-not-found.error';
 import { Transaction } from '../entities';
 import { InjectModel } from '@nestjs/mongoose';
+import { DeleteResult } from 'mongodb';
 
 @Injectable()
 export class TransactionRepository {
@@ -189,9 +189,26 @@ export class TransactionRepository {
     try {
       const result = await this._getOneEntity(deleteEntityInput);
 
-      await result.save({ session, validateBeforeSave: false });
+      await this.entityModel.deleteOne({ _id: result._id }, { session });
 
-      return this._getOneEntity({ id: result.id }, session);
+      return result;
+    } catch (error) {
+      console.error(`${JSON.stringify(error)}`);
+      throw error;
+    }
+  }
+
+  public async deleteManyEntities(
+    deleteManyEntitiesInput: Record<string, any>,
+    session?: ClientSession,
+  ): Promise<DeleteResult> {
+    try {
+      const result = await this.entityModel.deleteMany(
+        deleteManyEntitiesInput,
+        { session },
+      );
+
+      return result;
     } catch (error) {
       console.error(`${JSON.stringify(error)}`);
       throw error;
