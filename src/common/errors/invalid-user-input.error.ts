@@ -38,7 +38,9 @@ export class InvalidUserInputError extends BaseError {
     return new InvalidUserInputError(errors);
   }
 
-  static fromJoiValidationError(error: joi.ValidationError) {
+  static fromJoiValidationError(
+    error: joi.ValidationError,
+  ): InvalidUserInputError {
     const errors: IErrorDetail[] = formatJoiValidationError(error);
 
     return new InvalidUserInputError(errors);

@@ -15,7 +15,6 @@ export const formatJoiValidationError = (
   if (!error) {
     return [];
   }
-
   const paths = Object.keys(error.details);
   const errors: IErrorDetail[] = [];
 
@@ -30,6 +29,5 @@ export const formatJoiValidationError = (
 
     errors.push(errorDetail);
   }
-
   return errors;
 };
