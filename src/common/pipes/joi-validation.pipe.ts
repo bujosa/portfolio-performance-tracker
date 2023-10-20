@@ -1,4 +1,4 @@
-import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import { Injectable, ArgumentMetadata, PipeTransform } from '@nestjs/common';
 import { InvalidUserInputError } from '../errors/invalid-user-input.error';
 
 @Injectable()
