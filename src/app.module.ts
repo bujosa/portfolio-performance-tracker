@@ -13,10 +13,13 @@ import { PerformanceTrackingModule } from './performance-tracking/performance-tr
 import { TransactionService } from './transaction/transaction.service';
 import {
   GraphQLRequestContext,
+  assetLoader,
+  assetsLoader,
   transactionLoader,
   transactionsLoader,
 } from './graphql';
 import { IExpressContext } from './common/interfaces/express-context.interface';
+import { AssetService } from './asset/asset.service';
 
 @Module({
   imports: [
@@ -25,16 +28,27 @@ import { IExpressContext } from './common/interfaces/express-context.interface';
       envFilePath: `.env`,
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
-      imports: [TransactionModule],
-      inject: [TransactionService],
+      imports: [AssetModule, TransactionModule],
+      inject: [AssetService, TransactionService],
       driver: ApolloDriver,
-      useFactory: (transactionService: TransactionService) => {
+      useFactory: (
+        assetService: AssetService,
+        transactionService: TransactionService,
+      ) => {
         return {
           autoSchemaFile: true,
           context: (expressContext: IExpressContext): GraphQLRequestContext => {
             return {
               headers: expressContext.req.headers,
               loaders: {
+                assetLoader: assetLoader({
+                  service: assetService,
+                  fieldName: 'name',
+                }),
+                assetsLoader: assetsLoader({
+                  service: assetService,
+                  fieldName: 'name',
+                }),
                 transactionLoader: transactionLoader({
                   service: transactionService,
                   fieldName: 'id',
