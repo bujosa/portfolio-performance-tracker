@@ -1,8 +1,8 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { ValidationInput } from 'src/common/validation';
 import { validateNameWithJoi } from 'src/common/validation/strings/name/name.validator';
-import * as joi from 'joi';
 import { TransactionByAmountBasedInput } from './transaction-amount-based';
+import * as joi from 'joi';
 
 @InputType({
   description:

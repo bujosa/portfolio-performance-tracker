@@ -1,39 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import { ClientSession, Model, Error as MongooseErrors } from 'mongoose';
+import { ClientSession, Model, Error as MongooseErrors, Types } from 'mongoose';
 import { generateISODate } from 'src/common/functions/generate-iso-date-string.util';
-import { slugConfigType } from 'src/common/data/config/slugConfig.type';
 import { FilterInput } from 'src/common/graphql';
-import { CreatePortfolioInput } from '../../graphql/inputs/create-portfolio.input';
 import { mongooseQueryBuilder } from 'src/common/graphql/mongo';
 import {
   createEntityLog,
   getEntityByIdLog,
   getOneEntityLogMessageFormatter,
 } from 'src/common/functions/log-message-builder';
-import { validateAndGenerateSlug } from 'src/common/functions/validate-and-generate-slug';
 import { updateEntities } from 'src/common/functions/update-entities';
 import { InvalidUserInputError } from 'src/common/errors/invalid-user-input.error';
 import { DuplicateKeyError } from 'src/common/errors/duplicate-key.error';
 import { EntityNotFoundError } from 'src/common/errors/entity-not-found.error';
 import { Portfolio } from '../entities';
 import { InjectModel } from '@nestjs/mongoose';
-import { UpdatePortfolioInput } from 'src/portfolio/graphql/inputs/update-portfolio.input';
 import { transactionDefaultOptions } from 'src/common/mongo/transaction.options';
 import { TransactionRepository } from 'src/transaction/repository/repositories/transaction.repository';
 import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
+import {
+  CreatePortfolioInput,
+  CreatePortfolioWithAmountBasedInput,
+  TransactionByAmountBasedInput,
+  UpdatePortfolioInput,
+} from 'src/portfolio/graphql/inputs';
+import { Transaction } from 'src/transaction/repository/entities';
+import { ConfigService } from '@nestjs/config';
+import { EnvKey } from 'src/common/data/config/env-key.enum';
+import {
+  TransactionAndHistoricalDataObjects,
+  getTransactionsAndHistoricalDataObjects,
+} from 'src/portfolio/shared';
+import { CryptoMarketData } from 'src/crypto-market-data/repository/entities';
 
 @Injectable()
 export class PortfolioRepository {
   private readonly entityName = Portfolio.name;
-  private readonly slugConfig: slugConfigType = {
-    keys: ['name'],
-    isUnique: false,
-  };
 
   constructor(
     @InjectModel(Portfolio.name)
     readonly entityModel: Model<Portfolio>,
+    @InjectModel(CryptoMarketData.name)
+    readonly cryptoMarketDataModel: Model<CryptoMarketData>,
+    @InjectModel(Transaction.name)
+    readonly transactionModel: Model<Transaction>,
     readonly transactionRepository: TransactionRepository,
+    readonly configService: ConfigService,
   ) {}
 
   private async _getOneEntity(
@@ -132,17 +143,10 @@ export class PortfolioRepository {
     try {
       console.log(createEntityLog(this.entityName, createEntityInput));
 
-      const slug = validateAndGenerateSlug(
-        this.entityModel,
-        this.slugConfig,
-        createEntityInput,
-      );
-
       const result = new this.entityModel({
+        ...createEntityInput,
         createdAt: generateISODate(),
         updatedAt: generateISODate(),
-        ...createEntityInput,
-        slug,
       });
 
       await result.save({ session });
@@ -160,6 +164,69 @@ export class PortfolioRepository {
       }
 
       throw error;
+    }
+  }
+
+  /**
+   * @description Create a portfolio with amount based transactions
+   * @param createEntityInput {@link CreatePortfolioWithAmountBasedInput}
+   * @param session
+   * @returns
+   */
+  public async createEntityWithAmountBased(
+    createEntityInput: CreatePortfolioWithAmountBasedInput,
+  ): Promise<Portfolio> {
+    const session = await this.entityModel.startSession(
+      transactionDefaultOptions,
+    );
+
+    const { name, transactions } = createEntityInput;
+
+    try {
+      console.log(createEntityLog(this.entityName, createEntityInput));
+
+      const result = new this.entityModel({
+        createdAt: generateISODate(),
+        updatedAt: generateISODate(),
+        name,
+      });
+
+      const transactionsAndHistoricalDataObjects =
+        await this.getTransactionsAndHistoricalDataObjects(
+          transactions,
+          result._id,
+        );
+
+      await session.withTransaction(async () => {
+        await result.save({ session });
+
+        await Promise.all([
+          this.cryptoMarketDataModel.insertMany(
+            transactionsAndHistoricalDataObjects.historicalData,
+            { session },
+          ),
+          this.transactionModel.insertMany(
+            transactionsAndHistoricalDataObjects.transactions,
+            { session },
+          ),
+        ]);
+      });
+
+      return result;
+    } catch (error) {
+      console.error(`${JSON.stringify(error)}`);
+
+      if (error instanceof MongooseErrors.ValidationError) {
+        throw InvalidUserInputError.fromMongooseValidationError(error);
+      }
+
+      if (error.code === 11000) {
+        throw DuplicateKeyError.fromMongoDBDuplicateKeyError(error);
+      }
+
+      throw error;
+    } finally {
+      await session.endSession();
     }
   }
 
@@ -238,5 +305,16 @@ export class PortfolioRepository {
 
       throw error;
     }
+  }
+
+  private async getTransactionsAndHistoricalDataObjects(
+    transactions: TransactionByAmountBasedInput[],
+    portfolioId: Types.ObjectId,
+  ): Promise<TransactionAndHistoricalDataObjects> {
+    return getTransactionsAndHistoricalDataObjects(
+      transactions,
+      portfolioId,
+      this.configService.get(EnvKey.COINMARKETCAP_API_KEY),
+    );
   }
 }

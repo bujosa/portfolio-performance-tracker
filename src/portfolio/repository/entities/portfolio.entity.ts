@@ -19,13 +19,6 @@ export class Portfolio extends Document implements IPortfolio, IBaseEntity {
   })
   name: string;
 
-  @Prop({
-    required: true,
-    unique: true,
-    validate: validateSlug,
-  })
-  slug: string;
-
   version: number;
 
   @Prop({ required: true })

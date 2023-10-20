@@ -4,7 +4,7 @@ import { CreateAssetInput } from './graphql/inputs/create-asset.input';
 import { IAsset } from './shared/asset.interface';
 import { AssetRepository } from './repository/repositories/asset.repository';
 import { UpdateAssetInput } from './graphql/inputs/update-asset.input';
-import { getCoinPrice } from './shared/get_price';
+import { getTokenPrice } from './shared/get-token-price.function';
 import { ConfigService } from '@nestjs/config';
 import { EnvKey } from 'src/common/data/config/env-key.enum';
 import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
@@ -29,10 +29,6 @@ export class AssetService {
   public async createEntity(
     createAssetInput: CreateAssetInput,
   ): Promise<IAsset> {
-    // if (createAssetInput.name == 'Food') {
-    //   throw new EntityNotFoundError('Food is not an asset');
-    // }
-
     return this.repository.createEntity(createAssetInput);
   }
 
@@ -49,7 +45,7 @@ export class AssetService {
   }
 
   public async getPrice(asset: IAsset): Promise<number> {
-    const coinMarketCap = await getCoinPrice(
+    const coinMarketCap = await getTokenPrice(
       asset.symbol,
       this.configService.get(EnvKey.COINMARKETCAP_API_KEY),
     );

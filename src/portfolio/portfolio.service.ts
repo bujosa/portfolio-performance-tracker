@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { FilterInput } from 'src/common/graphql';
-import { CreatePortfolioInput } from './graphql/inputs/create-portfolio.input';
 import { IPortfolio } from './shared/portfolio.interface';
 import { PortfolioRepository } from './repository/repositories/portfolio.repository';
-import { UpdatePortfolioInput } from './graphql/inputs/update-portfolio.input';
 import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
+import {
+  CreatePortfolioInput,
+  CreatePortfolioWithAmountBasedInput,
+  UpdatePortfolioInput,
+} from './graphql/inputs';
 
 @Injectable()
 export class PortfolioService {
@@ -24,6 +27,14 @@ export class PortfolioService {
     createPortfolioInput: CreatePortfolioInput,
   ): Promise<IPortfolio> {
     return this.repository.createEntity(createPortfolioInput);
+  }
+
+  public async createEntityWithAmountBased(
+    createPortfolioWithAmountBasedInput: CreatePortfolioWithAmountBasedInput,
+  ): Promise<IPortfolio> {
+    return this.repository.createEntityWithAmountBased(
+      createPortfolioWithAmountBasedInput,
+    );
   }
 
   public async updateEntity(

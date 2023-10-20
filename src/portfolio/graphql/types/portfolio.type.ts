@@ -12,8 +12,5 @@ export class Portfolio {
   name: string;
 
   @Field()
-  slug: string;
-
-  @Field()
   createdAt: string;
 }

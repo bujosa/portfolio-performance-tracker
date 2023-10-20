@@ -40,6 +40,7 @@ export async function getTokensPrices(
         if (cryptocurrency) {
           const result = cryptocurrency.quote.USD;
           result.symbol = symbol;
+          result.name = name;
           tokensPricesData.push(result);
         } else {
           tokensPricesData.push({
