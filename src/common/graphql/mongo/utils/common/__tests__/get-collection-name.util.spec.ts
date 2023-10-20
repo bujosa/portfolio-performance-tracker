@@ -1,19 +1,19 @@
-import { MissingRequiredParametersError } from '@packages/errors/common/missing-required-parameters.error';
+import { MissingRequiredParametersError } from 'src/common/errors/missing-required-parameters.error';
 import { getCollectionName } from '../../common/get-collection-name.util';
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 
 describe('GetCollectionName', () => {
   it('should throw an error if the fieldName parameter is null', () => {
     // arrange & act & assert
     expect(() => getCollectionName(null)).toThrow(
-      MissingRequiredParametersError
+      MissingRequiredParametersError,
     );
   });
 
   it('should throw an error if the fieldName parameter is undefined', () => {
     // arrange & act & assert
     expect(() => getCollectionName(undefined)).toThrow(
-      MissingRequiredParametersError
+      MissingRequiredParametersError,
     );
   });
 
@@ -38,7 +38,7 @@ describe('GetCollectionName', () => {
     const fieldName = faker.random.alpha();
     const collectionName = faker.random.alpha();
     const collectionMap = {
-      [fieldName]: collectionName
+      [fieldName]: collectionName,
     };
 
     // act
