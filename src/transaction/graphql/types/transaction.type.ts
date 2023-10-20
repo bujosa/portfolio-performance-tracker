@@ -20,6 +20,8 @@ export class Transaction implements ITransaction {
   @Field({ description: 'Creation date of the transaction.' })
   createdAt: string;
 
-  portfolio: string;
+  @Field({ description: 'Represent the name of asset' })
   asset: string;
+
+  portfolio: string;
 }
