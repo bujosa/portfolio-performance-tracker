@@ -46,7 +46,10 @@ export class TransactionResolver {
     return this.service.getEntities(filterInput);
   }
 
-  @Mutation(() => Transaction)
+  @Mutation(() => Transaction, {
+    description:
+      'This mutation create a single transaction, specified by the input.',
+  })
   public async createTransaction(
     @Args(GraphQlFieldNames.INPUT_FIELD)
     createTransactionInput: CreateTransactionInput,

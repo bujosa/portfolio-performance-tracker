@@ -10,7 +10,6 @@ import {
   getEntityByIdLog,
   getOneEntityLogMessageFormatter,
 } from 'src/common/functions/log-message-builder';
-import { validateAndGenerateSlug } from 'src/common/functions/validate-and-generate-slug';
 import { updateEntities } from 'src/common/functions/update-entities';
 import { InvalidUserInputError } from 'src/common/errors/invalid-user-input.error';
 import { DuplicateKeyError } from 'src/common/errors/duplicate-key.error';
@@ -18,14 +17,11 @@ import { EntityNotFoundError } from 'src/common/errors/entity-not-found.error';
 import { CryptoMarketData } from '../entities';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateCryptoMarketDataInput } from 'src/crypto-market-data/graphql/inputs/update-crypto-market-data.input';
+import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 
 @Injectable()
 export class CryptoMarketDataRepository {
   private readonly entityName = CryptoMarketData.name;
-  private readonly slugConfig: slugConfigType = {
-    keys: ['name'],
-    isUnique: false,
-  };
 
   constructor(
     @InjectModel(CryptoMarketData.name)
@@ -130,17 +126,10 @@ export class CryptoMarketDataRepository {
     try {
       console.log(createEntityLog(this.entityName, createEntityInput));
 
-      const slug = validateAndGenerateSlug(
-        this.entityModel,
-        this.slugConfig,
-        createEntityInput,
-      );
-
       const result = new this.entityModel({
         createdAt: generateISODate(),
         updatedAt: generateISODate(),
         ...createEntityInput,
-        slug,
       });
 
       await result.save({ session });
@@ -193,15 +182,15 @@ export class CryptoMarketDataRepository {
   }
 
   public async deleteEntity(
-    deleteEntityInput: Record<string, any>,
+    deleteEntityInput: GetEntityByIdInput,
     session?: ClientSession,
   ): Promise<CryptoMarketData> {
     try {
       const result = await this._getOneEntity(deleteEntityInput);
 
-      await result.save({ session, validateBeforeSave: false });
+      await this.entityModel.deleteOne({ _id: result._id }, { session });
 
-      return this._getOneEntity({ id: result.id }, session);
+      return result;
     } catch (error) {
       console.error(`${JSON.stringify(error)}`);
       throw error;

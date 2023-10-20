@@ -64,7 +64,10 @@ export class PortfolioResolver {
     return this.service.updateEntity(updatePortfolioInput);
   }
 
-  @Mutation(() => Portfolio)
+  @Mutation(() => Portfolio, {
+    description:
+      'This mutation deletes a portfolio by id and ALL its transactions related with that portfolio',
+  })
   public async deletePortfolio(
     @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
     id: string,

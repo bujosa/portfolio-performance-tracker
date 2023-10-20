@@ -15,7 +15,7 @@ export class CryptoMarketDataResolver {
   constructor(private readonly service: CryptoMarketDataService) {}
 
   @Query(() => CryptoMarketData, {
-    description: 'This query returns a portfolio by id.',
+    description: 'This query returns a crypto market data by id.',
   })
   public async getCryptoMarketDataById(
     @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption)
@@ -25,7 +25,7 @@ export class CryptoMarketDataResolver {
   }
 
   @Query(() => [CryptoMarketData], {
-    description: 'This query returns all portfolios.',
+    description: 'This query returns all crypto market datas.',
   })
   public async getCryptoMarketDatas(
     @Args(GraphQlFieldNames.INPUT_FIELD, graphQlFindQueryOptions)
@@ -50,7 +50,9 @@ export class CryptoMarketDataResolver {
     return this.service.updateEntity(updateCryptoMarketDataInput);
   }
 
-  @Mutation(() => CryptoMarketData)
+  @Mutation(() => CryptoMarketData, {
+    description: 'This mutation delete and specific crypto market data.',
+  })
   public async deleteCryptoMarketData(
     @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption) id: string,
   ): Promise<CryptoMarketData> {
