@@ -15,6 +15,6 @@ import { TransactionResolver } from './transaction.resolver';
     ]),
   ],
   providers: [TransactionService, TransactionRepository, TransactionResolver],
-  exports: [MongooseModule, TransactionRepository],
+  exports: [MongooseModule, TransactionService, TransactionRepository],
 })
 export class TransactionModule {}
