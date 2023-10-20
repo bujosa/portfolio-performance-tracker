@@ -1,4 +1,12 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Context,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { Transaction } from './graphql/types/transaction.type';
 import {
   CreateTransactionInput,
@@ -11,6 +19,8 @@ import {
   FilterInput,
 } from 'src/common/graphql';
 import { TransactionService } from './transaction.service';
+import { Asset } from 'src/asset/graphql/types/asset.type';
+import { GraphQLRequestContext } from 'src/graphql';
 
 @Resolver(() => Transaction)
 export class TransactionResolver {
@@ -57,5 +67,13 @@ export class TransactionResolver {
     @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption) id: string,
   ): Promise<Transaction> {
     return this.service.deleteEntity({ id });
+  }
+
+  @ResolveField(() => Asset, { description: 'Represent the name of asset' })
+  public async asset(
+    @Parent() parent: Transaction,
+    @Context() ctx: GraphQLRequestContext,
+  ) {
+    return ctx.loaders.assetLoader.load(parent.asset);
   }
 }
