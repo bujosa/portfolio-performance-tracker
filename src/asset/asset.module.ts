@@ -15,6 +15,6 @@ import { AssetResolver } from './asset.resolver';
     ]),
   ],
   providers: [AssetService, AssetRepository, AssetResolver],
-  exports: [MongooseModule, AssetRepository],
+  exports: [MongooseModule, AssetService, AssetRepository],
 })
 export class AssetModule {}

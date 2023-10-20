@@ -49,9 +49,11 @@ export class AssetService {
   }
 
   public async getPrice(asset: IAsset): Promise<number> {
-    return getCoinPrice(
+    const coinMarketCap = await getCoinPrice(
       asset.symbol,
       this.configService.get(EnvKey.COINMARKETCAP_API_KEY),
     );
+
+    return coinMarketCap.price;
   }
 }

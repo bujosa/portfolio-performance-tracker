@@ -1,7 +1,22 @@
 import axios from 'axios';
 
-export async function getCoinPrice(symbol: string, apiKey: string) {
-  let price = 0;
+export async function getCoinPrice(
+  symbol: string,
+  apiKey: string,
+): Promise<CoinMarketCapQuoteUSD> {
+  let coinMarketCapQuoteUSD: CoinMarketCapQuoteUSD = {
+    symbol: symbol,
+    price: 0,
+    volume_24h: 0,
+    percent_change_1h: 0,
+    percent_change_24h: 0,
+    percent_change_7d: 0,
+    percent_change_30d: 0,
+    percent_change_60d: 0,
+    percent_change_90d: 0,
+    market_cap: 0,
+    last_updated: '',
+  };
 
   try {
     const response = await axios.get(
@@ -16,8 +31,7 @@ export async function getCoinPrice(symbol: string, apiKey: string) {
       const data = response.data;
       const cryptocurrency = data.data[symbol.toUpperCase()];
       if (cryptocurrency) {
-        price = cryptocurrency.quote.USD.price;
-        console.log(`Price of ${symbol}: $${price}`);
+        coinMarketCapQuoteUSD = cryptocurrency.quote.USD;
       } else {
         console.error(`Cryptocurrency ${symbol} not found.`);
       }
@@ -27,6 +41,20 @@ export async function getCoinPrice(symbol: string, apiKey: string) {
   } catch (error) {
     console.error(`Error: ${error.message}`);
   } finally {
-    return price;
+    return coinMarketCapQuoteUSD;
   }
+}
+
+export class CoinMarketCapQuoteUSD {
+  price: number;
+  symbol: string;
+  volume_24h: number;
+  percent_change_1h: number;
+  percent_change_24h: number;
+  percent_change_7d: number;
+  percent_change_30d: number;
+  percent_change_60d: number;
+  percent_change_90d: number;
+  market_cap: number;
+  last_updated: string;
 }
