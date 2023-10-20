@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { TransactionByAmountBasedInput } from '../graphql/inputs';
-import { getTokensPrices } from 'src/asset/shared/get_prices';
+import { getTokensPrices } from 'src/asset/shared/get-tokens-prices.function';
 import { generateISODate } from 'src/common/functions/generate-iso-date-string.util';
 
 /**
@@ -10,11 +10,11 @@ import { generateISODate } from 'src/common/functions/generate-iso-date-string.u
  * @param portfolioId {@link Types.ObjectId}
  * @param apiKey string
  */
-export const getTransactionsAndHistoricalDataObjects = async (
+export async function getTransactionsAndHistoricalDataObjects(
   transactions: TransactionByAmountBasedInput[],
   portfolioId: Types.ObjectId,
   apiKey: string,
-) => {
+): Promise<any> {
   const names = transactions.map((transaction) => transaction.asset);
   const tokensPriceData = await getTokensPrices(names, apiKey);
 
@@ -43,7 +43,7 @@ export const getTransactionsAndHistoricalDataObjects = async (
       console.error(`Token price not found for ${transaction.asset}`);
     }
   }
-};
+}
 
 interface TransactionMongooseObject {
   _id: Types.ObjectId;

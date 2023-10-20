@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export async function getCoinPrice(
+export async function getTokenPrice(
   symbol: string,
   apiKey: string,
 ): Promise<CoinMarketCapQuoteUSD> {
