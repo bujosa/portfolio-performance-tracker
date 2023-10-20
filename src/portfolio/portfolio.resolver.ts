@@ -20,6 +20,7 @@ import { UpdatePortfolioInput } from './graphql/inputs/update-portfolio.input';
 import { Transaction } from 'src/transaction/graphql/types/transaction.type';
 import { GraphQLRequestContext } from 'src/graphql';
 import { ValidateObjectIdPipe } from 'src/common/pipes/joi-id-validation.pipe';
+import { CreatePortfolioWithAmountBasedInput } from './graphql/inputs/create-portfolio-with-amount-based.input';
 
 @Resolver(() => Portfolio)
 export class PortfolioResolver {
@@ -45,7 +46,9 @@ export class PortfolioResolver {
     return this.service.getEntities(filterInput);
   }
 
-  @Mutation(() => Portfolio)
+  @Mutation(() => Portfolio, {
+    description: 'This mutation creates a portfolio with the given input.',
+  })
   public async createPortfolio(
     @Args(GraphQlFieldNames.INPUT_FIELD)
     createPortfolioInput: CreatePortfolioInput,
@@ -69,6 +72,21 @@ export class PortfolioResolver {
     return this.service.deleteEntity({ id });
   }
 
+  // Business logic
+  @Mutation(() => Portfolio, {
+    description:
+      'This mutation creates a portfolio with a initial transactions based in amount.',
+  })
+  public async createPortfolioWithAmountBased(
+    @Args(GraphQlFieldNames.INPUT_FIELD)
+    createPortfolioWithAmountBasedInput: CreatePortfolioWithAmountBasedInput,
+  ): Promise<Portfolio> {
+    return this.service.createEntityWithAmountBased(
+      createPortfolioWithAmountBasedInput,
+    );
+  }
+
+  // Resolver fields
   @ResolveField(() => [Transaction])
   public async transactions(
     @Parent() parent: Portfolio,
