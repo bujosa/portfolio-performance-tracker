@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export async function getCoinPrice(symbol: string, apiKey: string) {
   let price = 0;
+
   try {
     const response = await axios.get(
       `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${symbol}`,

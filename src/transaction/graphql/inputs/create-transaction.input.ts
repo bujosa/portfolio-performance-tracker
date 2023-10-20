@@ -20,11 +20,10 @@ export class CreateTransactionInput extends ValidationInput {
   quantity: number;
 
   @Field(() => Float, {
-    nullable: true,
     description:
       'Price of the asset in the moment that you bought the crypto currency. Example -> 63987.24',
   })
-  price?: number;
+  price: number;
 
   @Field({
     description:
@@ -41,7 +40,7 @@ export class CreateTransactionInput extends ValidationInput {
       .valid(...Object.values(CryptoAssetEnum))
       .required(),
     quantity: validatePositiveNumberWithJoi.required(),
-    price: validatePositiveNumberWithJoi,
+    price: validatePositiveNumberWithJoi.required(),
     date: validateISODateWithJoi('date').required(),
     portfolio: validateMongoIdWithJoi('portfolio').required(),
   });
