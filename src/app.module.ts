@@ -10,6 +10,13 @@ import { AssetModule } from './asset/asset.module';
 import { gqlErrorFormatter } from './common/errors/utils/gql-error-formatter.util';
 import { CryptoMarketDataModule } from './crypto-market-data/crypto-market-data.module';
 import { PerformanceTrackingModule } from './performance-tracking/performance-tracking.module';
+import { TransactionService } from './transaction/transaction.service';
+import {
+  GraphQLRequestContext,
+  transactionLoader,
+  transactionsLoader,
+} from './graphql';
+import { IExpressContext } from './common/interfaces/express-context.interface';
 
 @Module({
   imports: [
@@ -18,12 +25,27 @@ import { PerformanceTrackingModule } from './performance-tracking/performance-tr
       envFilePath: `.env`,
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
-      imports: [],
-      inject: [],
+      imports: [TransactionModule],
+      inject: [TransactionService],
       driver: ApolloDriver,
-      useFactory: () => {
+      useFactory: (transactionService: TransactionService) => {
         return {
           autoSchemaFile: true,
+          context: (expressContext: IExpressContext): GraphQLRequestContext => {
+            return {
+              headers: expressContext.req.headers,
+              loaders: {
+                transactionLoader: transactionLoader({
+                  service: transactionService,
+                  fieldName: 'id',
+                }),
+                transactionsLoader: transactionsLoader({
+                  service: transactionService,
+                  fieldName: 'portfolio',
+                }),
+              },
+            };
+          },
           formatError: gqlErrorFormatter,
         };
       },

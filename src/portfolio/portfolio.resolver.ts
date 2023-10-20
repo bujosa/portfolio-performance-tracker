@@ -1,4 +1,12 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Context,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { Portfolio } from './graphql/types/portfolio.type';
 import { CreatePortfolioInput } from './graphql/inputs/create-portfolio.input';
 import {
@@ -9,6 +17,9 @@ import {
 } from 'src/common/graphql';
 import { PortfolioService } from './portfolio.service';
 import { UpdatePortfolioInput } from './graphql/inputs/update-portfolio.input';
+import { Transaction } from 'src/transaction/graphql/types/transaction.type';
+import { GraphQLRequestContext } from 'src/graphql';
+import { ValidateObjectIdPipe } from 'src/common/pipes/joi-id-validation.pipe';
 
 @Resolver(() => Portfolio)
 export class PortfolioResolver {
@@ -18,7 +29,7 @@ export class PortfolioResolver {
     description: 'This query returns a portfolio by id.',
   })
   public async getPortfolioById(
-    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption)
+    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
     id: string,
   ): Promise<Portfolio> {
     return this.service.getOneEntity({ id });
@@ -52,8 +63,17 @@ export class PortfolioResolver {
 
   @Mutation(() => Portfolio)
   public async deletePortfolio(
-    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption) id: string,
+    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
+    id: string,
   ): Promise<Portfolio> {
     return this.service.deleteEntity({ id });
+  }
+
+  @ResolveField(() => [Transaction])
+  public async transactions(
+    @Parent() parent: Portfolio,
+    @Context() ctx: GraphQLRequestContext,
+  ) {
+    return ctx.loaders.transactionsLoader.load(parent.id);
   }
 }
