@@ -200,6 +200,16 @@ Frameworks and Tools Used:
     }
    ```
 
+## Evaluation Criteria:
+
+There is no right answer as such; we will evaluate your task based on the following:
+
+- [x] **Correctness and functionality:** I created the CRUD for the portfolio and transactions, and the performance tracking query, also I created the mutations for creating a portfolio based on amount and weight.
+- [x] **Code Quality:** Is your code well-structured and readable? |U|
+- [x] **Testing:** I added unit tests and integration tests.
+- [x] **Security:** I added a InputValidationPipe, SanitizationPipe, and database validation layer, and transactions for preventing errors with the database.
+- [x] **Documentation:** I added a README file with instructions on how to run your application and any other relevant information, documentation for the mutations and queries, and any other relevant information, some documentation for the code, etc.
+
 ## Installation
 
 ```bash

@@ -20,6 +20,7 @@ import {
 } from './graphql';
 import { IExpressContext } from './common/interfaces/express-context.interface';
 import { AssetService } from './asset/asset.service';
+import { PortfolioService } from './portfolio/portfolio.service';
 
 @Module({
   imports: [
@@ -28,11 +29,12 @@ import { AssetService } from './asset/asset.service';
       envFilePath: `.env`,
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
-      imports: [AssetModule, TransactionModule],
-      inject: [AssetService, TransactionService],
+      imports: [AssetModule, PortfolioModule, TransactionModule],
+      inject: [AssetService, PortfolioService, TransactionService],
       driver: ApolloDriver,
       useFactory: (
         assetService: AssetService,
+        portfolioService: PortfolioService,
         transactionService: TransactionService,
       ) => {
         return {
@@ -45,9 +47,9 @@ import { AssetService } from './asset/asset.service';
                   service: assetService,
                   fieldName: 'name',
                 }),
-                assetsLoader: assetsLoader({
-                  service: assetService,
-                  fieldName: 'name',
+                portfolioLoader: assetLoader({
+                  service: portfolioService,
+                  fieldName: 'id',
                 }),
                 transactionLoader: transactionLoader({
                   service: transactionService,

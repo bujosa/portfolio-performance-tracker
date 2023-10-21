@@ -19,6 +19,6 @@ import { CryptoMarketDataModule } from 'src/crypto-market-data/crypto-market-dat
     ]),
   ],
   providers: [PortfolioService, PortfolioRepository, PortfolioResolver],
-  exports: [MongooseModule],
+  exports: [MongooseModule, PortfolioService],
 })
 export class PortfolioModule {}
