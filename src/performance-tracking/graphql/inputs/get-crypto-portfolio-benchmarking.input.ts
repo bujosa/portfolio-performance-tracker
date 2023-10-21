@@ -4,14 +4,17 @@ import { CryptoAssetEnum } from '../enums/crypto-asset.enum';
 import { validateMongoIdWithJoi } from 'src/common/validation/id/id.validator';
 import * as joi from 'joi';
 
-@InputType()
+@InputType({
+  description: 'The input for the getCryptoPortfolioBenchmarking query',
+})
 export class GetCryptoPortfolioBenchmarkingInput extends ValidationInput {
   @Field(() => ID, { description: 'The id of the portfolio' })
   portfolio: string;
 
   @Field(() => CryptoAssetEnum, {
     defaultValue: CryptoAssetEnum.BITCOIN,
-    description: 'The asset to benchmark against example BITCOIN',
+    description:
+      'The asset to benchmark against the portfolio. Default is BITCOIN.',
     nullable: true,
   })
   asset?: CryptoAssetEnum;

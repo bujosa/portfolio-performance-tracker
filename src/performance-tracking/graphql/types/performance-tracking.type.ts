@@ -1,19 +1,16 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
+import { ICalculateBenchmarking } from 'src/performance-tracking/shared/interfaces/benchmarking.interface';
+import { PortfolioBenchmarking } from './portfolio-benchmarking.type';
+import { AssetBenchmarking } from './asset-benchmarking.type';
 
 @ObjectType({
   description:
-    'PerformanceTracking object type, represents a set of assets owned by a user',
+    'Calculate Benchmarking is a type that represents the calculate benchmarking agains the portfolio and the assets.',
 })
-export class PerformanceTracking {
-  @Field(() => ID)
-  id: string;
+export class CalculateBenchmarking implements ICalculateBenchmarking {
+  @Field(() => PortfolioBenchmarking)
+  portfolio: PortfolioBenchmarking;
 
-  @Field()
-  name: string;
-
-  @Field()
-  slug: string;
-
-  @Field()
-  createdAt: string;
+  @Field(() => AssetBenchmarking)
+  asset: AssetBenchmarking;
 }
