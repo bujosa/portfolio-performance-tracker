@@ -39,7 +39,7 @@ export async function getTransactionsAndHistoricalDataObjects(
 
     let quantity = 0;
 
-    if (transaction instanceof TransactionByAmountBasedInput) {
+    if ('amount' in transaction) {
       quantity = transaction.amount;
     } else {
       let budgetPerTransaction = budget * (transaction.weight / 100);
@@ -52,7 +52,7 @@ export async function getTransactionsAndHistoricalDataObjects(
         id: _idTransaction.toHexString(),
         portfolio: portfolioId,
         asset: transaction.asset,
-        quantity,
+        quantity: quantity,
         price: tokenPrice.price,
         date: tokenPrice.last_updated,
         version: 0,
