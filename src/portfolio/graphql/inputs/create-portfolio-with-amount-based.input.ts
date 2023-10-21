@@ -9,7 +9,7 @@ import * as joi from 'joi';
     'This input is used to create a portfolio with Amount Based example: 1 BTC, 2 ETH etc.',
 })
 export class CreatePortfolioWithAmountBasedInput extends ValidationInput {
-  @Field()
+  @Field({ description: 'Name of the porfolio' })
   name: string;
 
   @Field(() => [TransactionByAmountBasedInput])
