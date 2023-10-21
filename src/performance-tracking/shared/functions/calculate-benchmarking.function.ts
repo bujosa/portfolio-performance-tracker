@@ -46,6 +46,7 @@ export function calculateBenchmarking(
       (priceData) => priceData.name === transactionGroupByAsset.asset,
     ).price;
 
+    // Get the historical data of the asset and sort it by date
     const selectHistoricalData = priceAndHistoricalData.historicalData
       .filter(
         (historicalData) =>
@@ -71,13 +72,11 @@ export function calculateBenchmarking(
     });
   }
 
-  portfolioChange.currentBudget = temporalBenchmarking.reduce((acc, item) => {
-    return acc + item.currentPrice * item.quantity;
-  }, 0);
-
+  // Calculate the current budget and the change of the portfolio
   portfolioChange = temporalBenchmarking.reduce((acc, item) => {
     return {
       ...acc,
+      currentBudget: acc.currentBudget + item.currentPrice * item.quantity,
       changeOneHour: acc.changeOneHour + item.changeOneHour * item.quantity,
       changeOneDay: acc.changeOneDay + item.changeOneDay * item.quantity,
       changeOneWeek: acc.changeOneWeek + item.changeOneWeek * item.quantity,

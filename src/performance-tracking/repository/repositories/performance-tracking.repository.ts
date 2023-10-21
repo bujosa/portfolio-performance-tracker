@@ -58,6 +58,7 @@ export class PerformanceTrackingRepository {
       this.configService.get(EnvKey.COINMARKETCAP_API_KEY),
     );
 
+    // Calculate the benchmarking of the portfolio and the asset
     const benchmarking = calculateBenchmarking(
       portfolioExists._id.toHexString(),
       transactionsGroupByAsset,
