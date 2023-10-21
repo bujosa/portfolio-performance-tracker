@@ -1,1 +1,2 @@
-export * from './performance-tracking.interface';
+export * from './functions';
+export * from './interfaces';
