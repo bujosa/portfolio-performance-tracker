@@ -6,6 +6,7 @@ import {
 } from 'src/asset/shared/get-tokens-prices.function';
 import { generateISODate } from 'src/common/functions/generate-iso-date-string.util';
 import { TransactionByWeightBasedInput } from '../graphql/inputs/transaction-weight-based';
+import { HistoricalDataMongooseObject } from 'src/crypto-market-data/shared/historical-data.type';
 
 /**
  * @description Extracts prices for the market data of the tokens in the
@@ -75,7 +76,7 @@ export async function getTransactionsAndHistoricalDataObjects(
   );
 }
 
-function createMultipleHistoricalData(
+export function createMultipleHistoricalData(
   tokenPrice: CoinMarketCapQuoteUSDWithName,
 ): HistoricalDataMongooseObject[] {
   const result = [];
@@ -94,26 +95,32 @@ function createMultipleHistoricalData(
 
   percentAndDate.push({
     percent: percent_change_1h,
+    time: 3600 * 1000,
     date: new Date(timestamp - 3600 * 1000).toISOString(),
   });
   percentAndDate.push({
     percent: percentChange24h,
+    time: 24 * 3600 * 1000,
     date: new Date(timestamp - 24 * 3600 * 1000).toISOString(),
   });
   percentAndDate.push({
     percent: percentChange7d,
+    time: 7 * 24 * 3600 * 1000,
     date: new Date(timestamp - 7 * 24 * 3600 * 1000).toISOString(),
   });
   percentAndDate.push({
     percent: percentChange30d,
+    time: 30 * 24 * 3600 * 1000,
     date: new Date(timestamp - 30 * 24 * 3600 * 1000).toISOString(),
   });
   percentAndDate.push({
     percent: percentChange60d,
+    time: 60 * 24 * 3600 * 1000,
     date: new Date(timestamp - 60 * 24 * 3600 * 1000).toISOString(),
   });
   percentAndDate.push({
     percent: percentChange90d,
+    time: 90 * 24 * 3600 * 1000,
     date: new Date(timestamp - 90 * 24 * 3600 * 1000).toISOString(),
   });
 
@@ -167,22 +174,6 @@ type TransactionMongooseObject = {
   date: string;
   quantity: number;
   price: number;
-  version: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type HistoricalDataMongooseObject = {
-  _id: Types.ObjectId;
-  id: string;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  marketCap: number;
-  timestamp: string;
-  cryptoName: string;
-  date: string;
   version: number;
   createdAt: string;
   updatedAt: string;

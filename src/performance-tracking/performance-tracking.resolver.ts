@@ -1,38 +1,23 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import { PerformanceTracking } from './graphql/types/performance-tracking.type';
-import {
-  GraphQlFieldNames,
-  graphQlIdArgOption,
-  graphQlFindQueryOptions,
-  FilterInput,
-} from 'src/common/graphql';
+import { CalculateBenchmarking } from './graphql/types/performance-tracking.type';
+import { GraphQlFieldNames } from 'src/common/graphql';
 import { PerformanceTrackingService } from './performance-tracking.service';
 import { GetCryptoPortfolioBenchmarkingInput } from './graphql/inputs/get-crypto-portfolio-benchmarking.input';
 
-@Resolver(() => PerformanceTracking)
+@Resolver(() => CalculateBenchmarking)
 export class PerformanceTrackingResolver {
   constructor(private readonly service: PerformanceTrackingService) {}
 
-  @Query(() => PerformanceTracking, {
+  @Query(() => CalculateBenchmarking, {
     description:
       'Getting a relative portfolio benchmarking against a cryptocurrency, for example, benchmarking a portfolioZ against Bitcoin',
   })
   public async getCryptoPortfolioBenchmarking(
     @Args(GraphQlFieldNames.INPUT_FIELD)
     getCryptoPortfolioBenchmarkingInput: GetCryptoPortfolioBenchmarkingInput,
-  ): Promise<PerformanceTracking> {
+  ): Promise<CalculateBenchmarking> {
     return this.service.getCryptoPortfolioBenchmarking(
       getCryptoPortfolioBenchmarkingInput,
     );
-  }
-
-  @Query(() => [PerformanceTracking], {
-    description: 'This query returns all portfolios.',
-  })
-  public async getPerformanceTrackings(
-    @Args(GraphQlFieldNames.INPUT_FIELD, graphQlFindQueryOptions)
-    filterInput: FilterInput,
-  ): Promise<PerformanceTracking[]> {
-    return this.service.getEntities(filterInput);
   }
 }

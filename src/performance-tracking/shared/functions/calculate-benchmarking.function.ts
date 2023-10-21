@@ -4,6 +4,7 @@ import { IGroupTransactionsByAsset } from '../interfaces/group-transactions-by-a
 import { ICalculateBenchmarking } from '../interfaces/benchmarking.interface';
 
 export function calculateBenchmarking(
+  portfolio: string,
   transactionsGroupByAsset: IGroupTransactionsByAsset[],
   asset: string,
   priceAndHistoricalData: PriceAndHistoricalData,
@@ -130,7 +131,7 @@ export function calculateBenchmarking(
 
   const benchmarking: ICalculateBenchmarking = {
     portfolio: {
-      id: 'portfolio',
+      id: portfolio,
       totalSpent: portfolioChange.totalSpent,
       currentBudget: portfolioChange.currentBudget,
       changeOneHour: portfolioChange.changeOneHour,

@@ -30,7 +30,7 @@ export const groupTransactionsByAssetPipeline = (
       },
     },
     {
-      $addField: {
+      $addFields: {
         asset: '$_id',
       },
     },
