@@ -5,7 +5,7 @@ import {
   getTokensPrices,
 } from 'src/asset/shared/get-tokens-prices.function';
 import { generateISODate } from 'src/common/functions/generate-iso-date-string.util';
-import { TransactionByWeightBasedInput } from '../graphql/inputs/transaction-weight-based';
+import { TransactionByWeightBasedInput } from '../graphql/inputs/transaction-weight-based.input';
 import { HistoricalDataMongooseObject } from 'src/crypto-market-data/shared/historical-data.type';
 
 /**

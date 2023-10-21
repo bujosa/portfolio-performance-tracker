@@ -32,7 +32,7 @@ import {
   getTransactionsAndHistoricalDataObjects,
 } from 'src/portfolio/shared';
 import { CryptoMarketData } from 'src/crypto-market-data/repository/entities';
-import { TransactionByWeightBasedInput } from 'src/portfolio/graphql/inputs/transaction-weight-based';
+import { TransactionByWeightBasedInput } from 'src/portfolio/graphql/inputs/transaction-weight-based.input';
 
 @Injectable()
 export class PortfolioRepository {

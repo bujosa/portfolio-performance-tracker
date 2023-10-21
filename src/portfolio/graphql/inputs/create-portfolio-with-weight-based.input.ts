@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { ValidationInput } from 'src/common/validation';
 import { validateNameWithJoi } from 'src/common/validation/strings/name/name.validator';
-import { TransactionByWeightBasedInput } from './transaction-weight-based';
+import { TransactionByWeightBasedInput } from './transaction-weight-based.input';
 import * as joi from 'joi';
 import { validate } from 'graphql';
 import { validatePositiveNumberWithJoi } from 'src/common/validation/number';

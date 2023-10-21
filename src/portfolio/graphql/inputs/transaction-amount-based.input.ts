@@ -1,6 +1,5 @@
 import { InputType, Field, Float } from '@nestjs/graphql';
 import { ValidationInput } from 'src/common/validation';
-import { validateNameWithJoi } from 'src/common/validation/strings/name/name.validator';
 import * as joi from 'joi';
 import { CryptoAssetEnum } from 'src/performance-tracking/graphql/enums/crypto-asset.enum';
 import { validatePositiveNumberWithJoi } from 'src/common/validation/number';
