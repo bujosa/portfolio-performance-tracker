@@ -5,7 +5,6 @@ import { MongoSanitizeInterceptor } from './common/mongo/interceptors/mongo-sani
 import { ConfigService } from '@nestjs/config';
 import { EnvKey } from './common/data/config/env-key.enum';
 import { CustomExceptionsFilter } from './common/filters/custom.exception-filter';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

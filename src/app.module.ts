@@ -39,6 +39,7 @@ import { PortfolioService } from './portfolio/portfolio.service';
       ) => {
         return {
           autoSchemaFile: true,
+          formatError: gqlErrorFormatter,
           context: (expressContext: IExpressContext): GraphQLRequestContext => {
             return {
               headers: expressContext.req.headers,
@@ -62,7 +63,6 @@ import { PortfolioService } from './portfolio/portfolio.service';
               },
             };
           },
-          formatError: gqlErrorFormatter,
         };
       },
     }),
