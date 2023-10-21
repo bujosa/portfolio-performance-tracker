@@ -80,8 +80,6 @@ export class PerformanceTrackingRepository {
     try {
       return await this.transactionModel.aggregate(pipeline);
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
-
       throw error;
     }
   }

@@ -73,7 +73,6 @@ export class PortfolioRepository {
       );
       return this._getOneEntity(getOneEntityInput);
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
       throw error;
     }
   }
@@ -103,7 +102,6 @@ export class PortfolioRepository {
 
       return entity;
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
       throw error;
     }
   }
@@ -117,7 +115,6 @@ export class PortfolioRepository {
       console.log(getEntityByIdLog(this.entityName, id));
       return this._getOneEntityById(id, session);
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
       throw error;
     }
   }
@@ -155,8 +152,6 @@ export class PortfolioRepository {
 
       return this._getOneEntity({ id: result.id }, session);
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
-
       if (error instanceof MongooseErrors.ValidationError) {
         throw InvalidUserInputError.fromMongooseValidationError(error);
       }
@@ -216,8 +211,6 @@ export class PortfolioRepository {
 
       return result;
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
-
       if (error instanceof MongooseErrors.ValidationError) {
         throw InvalidUserInputError.fromMongooseValidationError(error);
       }
@@ -280,8 +273,6 @@ export class PortfolioRepository {
 
       return result;
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
-
       if (error instanceof MongooseErrors.ValidationError) {
         throw InvalidUserInputError.fromMongooseValidationError(error);
       }
@@ -317,8 +308,6 @@ export class PortfolioRepository {
 
       return this._getOneEntity({ id: result.id }, session);
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
-
       if (error instanceof MongooseErrors.ValidationError) {
         throw InvalidUserInputError.fromMongooseValidationError(error);
       }
@@ -356,7 +345,6 @@ export class PortfolioRepository {
 
       return result;
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
       throw error;
     } finally {
       await session.endSession();
@@ -367,8 +355,6 @@ export class PortfolioRepository {
     try {
       return await this.entityModel.aggregate(pipeline);
     } catch (error) {
-      console.error(`${JSON.stringify(error)}`);
-
       throw error;
     }
   }

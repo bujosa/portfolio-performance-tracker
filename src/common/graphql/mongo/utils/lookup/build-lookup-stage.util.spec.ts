@@ -8,8 +8,8 @@ describe('BuildLookupStage', () => {
     // arrange
     const input: IBuildLookupStageInput = {
       collection: null,
-      localField: faker.random.alpha(),
-      outputField: faker.random.alpha(),
+      localField: faker.string.alpha(),
+      outputField: faker.string.alpha(),
     };
 
     // act & assert
@@ -22,8 +22,8 @@ describe('BuildLookupStage', () => {
     // arrange
     const input: IBuildLookupStageInput = {
       collection: undefined,
-      localField: faker.random.alpha(),
-      outputField: faker.random.alpha(),
+      localField: faker.string.alpha(),
+      outputField: faker.string.alpha(),
     };
 
     // act & assert
@@ -36,8 +36,8 @@ describe('BuildLookupStage', () => {
     // arrange
     const input: IBuildLookupStageInput = {
       collection: '',
-      localField: faker.random.alpha(),
-      outputField: faker.random.alpha(),
+      localField: faker.string.alpha(),
+      outputField: faker.string.alpha(),
     };
 
     // act & assert
@@ -49,9 +49,9 @@ describe('BuildLookupStage', () => {
   it('should throw an error if the localField option is null', () => {
     // arrange
     const input: IBuildLookupStageInput = {
-      collection: faker.random.alpha(),
+      collection: faker.string.alpha(),
       localField: null,
-      outputField: faker.random.alpha(),
+      outputField: faker.string.alpha(),
     };
 
     // act & assert
@@ -63,9 +63,9 @@ describe('BuildLookupStage', () => {
   it('should throw an error if the localField option is undefined', () => {
     // arrange
     const input: IBuildLookupStageInput = {
-      collection: faker.random.alpha(),
+      collection: faker.string.alpha(),
       localField: undefined,
-      outputField: faker.random.alpha(),
+      outputField: faker.string.alpha(),
     };
 
     // act & assert
@@ -77,9 +77,9 @@ describe('BuildLookupStage', () => {
   it('should throw an error if the localField option is empty', () => {
     // arrange
     const input: IBuildLookupStageInput = {
-      collection: faker.random.alpha(),
+      collection: faker.string.alpha(),
       localField: '',
-      outputField: faker.random.alpha(),
+      outputField: faker.string.alpha(),
     };
 
     // act & assert
@@ -91,8 +91,8 @@ describe('BuildLookupStage', () => {
   it('should throw an error if the outputField option is null', () => {
     // arrange
     const input: IBuildLookupStageInput = {
-      collection: faker.random.alpha(),
-      localField: faker.random.alpha(),
+      collection: faker.string.alpha(),
+      localField: faker.string.alpha(),
       outputField: null,
     };
 
@@ -105,8 +105,8 @@ describe('BuildLookupStage', () => {
   it('should throw an error if the outputField option is undefined', () => {
     // arrange
     const input: IBuildLookupStageInput = {
-      collection: faker.random.alpha(),
-      localField: faker.random.alpha(),
+      collection: faker.string.alpha(),
+      localField: faker.string.alpha(),
       outputField: undefined,
     };
 
@@ -119,8 +119,8 @@ describe('BuildLookupStage', () => {
   it('should throw an error if the outputField option is empty', () => {
     // arrange
     const input: IBuildLookupStageInput = {
-      collection: faker.random.alpha(),
-      localField: faker.random.alpha(),
+      collection: faker.string.alpha(),
+      localField: faker.string.alpha(),
       outputField: '',
     };
 
@@ -133,9 +133,9 @@ describe('BuildLookupStage', () => {
   it('should return a lookup stage', () => {
     // arrange
     const input: IBuildLookupStageInput = {
-      collection: faker.random.alpha(),
-      localField: faker.random.alpha(),
-      outputField: faker.random.alpha(),
+      collection: faker.string.alpha(),
+      localField: faker.string.alpha(),
+      outputField: faker.string.alpha(),
     };
 
     // act

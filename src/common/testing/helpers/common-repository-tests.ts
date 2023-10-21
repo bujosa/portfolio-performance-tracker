@@ -190,7 +190,7 @@ export class CommonRepositoryTests {
     const result = await this.entityRepository.deleteEntity(input);
 
     // Assert
-    expect(result.deleted).toBe(true);
+    expect(result.id).toEqual(entity.id);
   }
 
   public async deleteEntityError() {

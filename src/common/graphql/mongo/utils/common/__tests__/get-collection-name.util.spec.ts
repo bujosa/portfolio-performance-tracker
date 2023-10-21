@@ -24,7 +24,7 @@ describe('GetCollectionName', () => {
 
   it('should return the fieldName if the collectionMap is not provided', () => {
     // arrange
-    const fieldName = faker.random.alpha();
+    const fieldName = faker.string.alpha();
 
     // act
     const res = getCollectionName(fieldName);
@@ -35,8 +35,8 @@ describe('GetCollectionName', () => {
 
   it('should return the collectionName if the collectionMap is provided', () => {
     // arrange
-    const fieldName = faker.random.alpha();
-    const collectionName = faker.random.alpha();
+    const fieldName = faker.string.alpha();
+    const collectionName = faker.string.alpha();
     const collectionMap = {
       [fieldName]: collectionName,
     };
