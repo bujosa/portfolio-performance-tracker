@@ -28,7 +28,7 @@ export function calculateBenchmarking(
     return acc + transaction.totalSpent;
   }, 0);
 
-  const portfolioChange = {
+  let portfolioChange = {
     totalSpent,
     currentBudget: 0,
     currentPercentage: 0,
@@ -42,9 +42,6 @@ export function calculateBenchmarking(
 
   const temporalBenchmarking: IAssetChangeValue[] = [];
   for (const transactionGroupByAsset of transactionsGroupByAsset) {
-    const meanPrice =
-      transactionGroupByAsset.totalSpent / transactionGroupByAsset.quantity;
-
     const currentPrice = priceAndHistoricalData.priceData.find(
       (priceData) => priceData.name === transactionGroupByAsset.asset,
     ).price;
@@ -56,90 +53,59 @@ export function calculateBenchmarking(
       )
       .sort((a, b) => {
         return new Date(a.date).getTime() - new Date(b.date).getTime() > 0
-          ? 1
-          : -1;
+          ? -1
+          : 1;
       });
 
     temporalBenchmarking.push({
       asset: transactionGroupByAsset.asset,
       totalSpent: transactionGroupByAsset.totalSpent,
-      meanPrice,
+      quantity: transactionGroupByAsset.quantity,
       currentPrice,
-      currentPercentage: (currentPrice - meanPrice) / currentPrice,
-      changeOneHour:
-        (selectHistoricalData[0].close - meanPrice) /
-        selectHistoricalData[0].close,
-      changeOneDay:
-        (selectHistoricalData[1].close - meanPrice) /
-        selectHistoricalData[1].close,
-      changeOneWeek:
-        (selectHistoricalData[2].close - meanPrice) /
-        selectHistoricalData[2].close,
-      changeOneMonth:
-        (selectHistoricalData[3].close - meanPrice) /
-        selectHistoricalData[3].close,
-      changeTwoMonths:
-        (selectHistoricalData[4].close - meanPrice) /
-        selectHistoricalData[4].close,
-      changeThreeMonths:
-        (selectHistoricalData[5].close - meanPrice) /
-        selectHistoricalData[5].close,
+      changeOneHour: selectHistoricalData[0].close,
+      changeOneDay: selectHistoricalData[1].close,
+      changeOneWeek: selectHistoricalData[2].close,
+      changeOneMonth: selectHistoricalData[3].close,
+      changeTwoMonths: selectHistoricalData[4].close,
+      changeThreeMonths: selectHistoricalData[5].close,
     });
   }
 
-  // Calculate the change for the portfolio
-  for (const temporalBenchmarkingItem of temporalBenchmarking) {
-    portfolioChange.currentBudget +=
-      temporalBenchmarkingItem.currentPrice *
-      temporalBenchmarkingItem.totalSpent;
-    portfolioChange.currentPercentage += calculateCurrentChange(
-      totalSpent,
-      temporalBenchmarkingItem,
-      portfolioChange.currentPercentage,
-    );
-    portfolioChange.changeOneHour += calculateCurrentChange(
-      totalSpent,
-      temporalBenchmarkingItem,
-      portfolioChange.changeOneHour,
-    );
-    portfolioChange.changeOneDay += calculateCurrentChange(
-      totalSpent,
-      temporalBenchmarkingItem,
-      portfolioChange.changeOneDay,
-    );
-    portfolioChange.changeOneWeek += calculateCurrentChange(
-      totalSpent,
-      temporalBenchmarkingItem,
-      portfolioChange.changeOneWeek,
-    );
-    portfolioChange.changeOneMonth += calculateCurrentChange(
-      totalSpent,
-      temporalBenchmarkingItem,
-      portfolioChange.changeOneMonth,
-    );
-    portfolioChange.changeTwoMonths += calculateCurrentChange(
-      totalSpent,
-      temporalBenchmarkingItem,
-      portfolioChange.changeTwoMonths,
-    );
-    portfolioChange.changeThreeMonths += calculateCurrentChange(
-      totalSpent,
-      temporalBenchmarkingItem,
-      portfolioChange.changeThreeMonths,
-    );
-  }
+  portfolioChange.currentBudget = temporalBenchmarking.reduce((acc, item) => {
+    return acc + item.currentPrice * item.quantity;
+  }, 0);
+
+  portfolioChange = temporalBenchmarking.reduce((acc, item) => {
+    return {
+      ...acc,
+      changeOneHour: acc.changeOneHour + item.changeOneHour * item.quantity,
+      changeOneDay: acc.changeOneDay + item.changeOneDay * item.quantity,
+      changeOneWeek: acc.changeOneWeek + item.changeOneWeek * item.quantity,
+      changeOneMonth: acc.changeOneMonth + item.changeOneMonth * item.quantity,
+      changeTwoMonths:
+        acc.changeTwoMonths + item.changeTwoMonths * item.quantity,
+      changeThreeMonths:
+        acc.changeThreeMonths + item.changeThreeMonths * item.quantity,
+    };
+  }, portfolioChange);
 
   const benchmarking: ICalculateBenchmarking = {
     portfolio: {
       id: portfolio,
       totalSpent: portfolioChange.totalSpent,
       currentBudget: portfolioChange.currentBudget,
-      changeOneHour: portfolioChange.changeOneHour,
-      changeOneDay: portfolioChange.changeOneDay,
-      changeOneWeek: portfolioChange.changeOneWeek,
-      changeOneMonth: portfolioChange.changeOneMonth,
-      changeTwoMonths: portfolioChange.changeTwoMonths,
-      changeThreeMonths: portfolioChange.changeThreeMonths,
+      changeOneHour:
+        portfolioChange.currentBudget / portfolioChange.changeOneHour - 1,
+      changeOneDay:
+        portfolioChange.currentBudget / portfolioChange.changeOneDay - 1,
+      changeOneWeek:
+        portfolioChange.currentBudget / portfolioChange.changeOneWeek - 1,
+      changeOneMonth:
+        portfolioChange.currentBudget / portfolioChange.changeOneMonth - 1,
+      changeTwoMonths:
+        portfolioChange.currentBudget / portfolioChange.changeTwoMonths - 1,
+      changeThreeMonths:
+        portfolioChange.currentBudget / portfolioChange.changeThreeMonths - 1,
     },
     asset: {
       name: changeAsset.asset,
@@ -154,13 +120,4 @@ export function calculateBenchmarking(
   };
 
   return benchmarking;
-}
-
-function calculateCurrentChange(
-  globalTotalSpent: number,
-  currentAsset: IAssetChangeValue,
-  currentChange: number,
-): number {
-  const { totalSpent, currentPercentage } = currentAsset;
-  return (totalSpent / globalTotalSpent) * currentPercentage + currentChange;
 }

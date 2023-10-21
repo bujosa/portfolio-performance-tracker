@@ -1,9 +1,8 @@
 export interface IAssetChangeValue {
   asset: string;
   totalSpent: number;
-  meanPrice: number;
+  quantity: number;
   currentPrice: number;
-  currentPercentage: number;
   changeOneHour: number;
   changeOneDay: number;
   changeOneWeek: number;
