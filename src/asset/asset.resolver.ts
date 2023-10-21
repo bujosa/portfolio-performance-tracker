@@ -16,6 +16,7 @@ import {
   FilterInput,
 } from 'src/common/graphql';
 import { AssetService } from './asset.service';
+import { ValidateObjectIdPipe } from 'src/common/pipes/joi-id-validation.pipe';
 
 @Resolver(() => Asset)
 export class AssetResolver {
@@ -25,7 +26,7 @@ export class AssetResolver {
     description: 'This query returns an asset by id.',
   })
   public async getAssetById(
-    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption)
+    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
     id: string,
   ): Promise<Asset> {
     return this.service.getOneEntity({ id });
@@ -59,7 +60,8 @@ export class AssetResolver {
 
   @Mutation(() => Asset)
   public async deleteAsset(
-    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption) id: string,
+    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
+    id: string,
   ): Promise<Asset> {
     return this.service.deleteEntity({ id });
   }

@@ -9,6 +9,7 @@ import {
 } from 'src/common/graphql';
 import { CryptoMarketDataService } from './crypto-market-data.service';
 import { UpdateCryptoMarketDataInput } from './graphql/inputs/update-crypto-market-data.input';
+import { ValidateObjectIdPipe } from 'src/common/pipes/joi-id-validation.pipe';
 
 @Resolver(() => CryptoMarketData)
 export class CryptoMarketDataResolver {
@@ -18,7 +19,7 @@ export class CryptoMarketDataResolver {
     description: 'This query returns a crypto market data by id.',
   })
   public async getCryptoMarketDataById(
-    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption)
+    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
     id: string,
   ): Promise<CryptoMarketData> {
     return this.service.getOneEntity({ id });
@@ -54,7 +55,8 @@ export class CryptoMarketDataResolver {
     description: 'This mutation delete and specific crypto market data.',
   })
   public async deleteCryptoMarketData(
-    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption) id: string,
+    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
+    id: string,
   ): Promise<CryptoMarketData> {
     return this.service.deleteEntity({ id });
   }

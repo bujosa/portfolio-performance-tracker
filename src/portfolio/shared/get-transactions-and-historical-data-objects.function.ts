@@ -5,18 +5,23 @@ import {
   getTokensPrices,
 } from 'src/asset/shared/get-tokens-prices.function';
 import { generateISODate } from 'src/common/functions/generate-iso-date-string.util';
+import { TransactionByWeightBasedInput } from '../graphql/inputs/transaction-weight-based';
 
 /**
  * @description Extracts prices for the market data of the tokens in the
  * transactions and creates the transactions and historical data objects
- * @param transactions {@link TransactionByAmountBasedInput}
+ * @param transactions {@link TransactionByAmountBasedInput} | {@link TransactionByWeightBasedInput}
  * @param portfolioId {@link Types.ObjectId}
  * @param apiKey string
+ * @param budget number | undefined
  */
 export async function getTransactionsAndHistoricalDataObjects(
-  transactions: TransactionByAmountBasedInput[],
+  transactions:
+    | TransactionByAmountBasedInput[]
+    | TransactionByWeightBasedInput[],
   portfolioId: Types.ObjectId,
   apiKey: string,
+  budget?: number,
 ): Promise<TransactionAndHistoricalDataObjects> {
   const names = transactions.map((transaction) => transaction.asset);
   const tokensPriceData = await getTokensPrices(names, apiKey);
@@ -31,13 +36,22 @@ export async function getTransactionsAndHistoricalDataObjects(
 
     const _idTransaction = new Types.ObjectId();
 
+    let quantity = 0;
+
+    if (transaction instanceof TransactionByAmountBasedInput) {
+      quantity = transaction.amount;
+    } else {
+      let budgetPerTransaction = budget * (transaction.weight / 100);
+      quantity = budgetPerTransaction / tokenPrice.price;
+    }
+
     if (tokenPrice) {
       transactionsMongooseObject.push({
         _id: _idTransaction,
         id: _idTransaction.toHexString(),
         portfolio: portfolioId,
         asset: transaction.asset,
-        quantity: transaction.amount,
+        quantity,
         price: tokenPrice.price,
         date: tokenPrice.last_updated,
         version: 0,

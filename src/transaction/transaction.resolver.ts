@@ -21,6 +21,7 @@ import {
 import { TransactionService } from './transaction.service';
 import { Asset } from 'src/asset/graphql/types/asset.type';
 import { GraphQLRequestContext } from 'src/graphql';
+import { ValidateObjectIdPipe } from 'src/common/pipes/joi-id-validation.pipe';
 
 @Resolver(() => Transaction)
 export class TransactionResolver {
@@ -30,7 +31,7 @@ export class TransactionResolver {
     description: 'This query returns a transaction by id.',
   })
   public async getTransactionById(
-    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption)
+    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
     id: string,
   ): Promise<Transaction> {
     return this.service.getOneEntity({ id });
@@ -67,7 +68,8 @@ export class TransactionResolver {
 
   @Mutation(() => Transaction)
   public async deleteTransaction(
-    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption) id: string,
+    @Args(GraphQlFieldNames.ID_FIELD, graphQlIdArgOption, ValidateObjectIdPipe)
+    id: string,
   ): Promise<Transaction> {
     return this.service.deleteEntity({ id });
   }

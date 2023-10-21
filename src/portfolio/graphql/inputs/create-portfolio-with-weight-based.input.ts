@@ -3,6 +3,8 @@ import { ValidationInput } from 'src/common/validation';
 import { validateNameWithJoi } from 'src/common/validation/strings/name/name.validator';
 import { TransactionByWeightBasedInput } from './transaction-weight-based';
 import * as joi from 'joi';
+import { validate } from 'graphql';
+import { validatePositiveNumberWithJoi } from 'src/common/validation/number';
 
 @InputType({
   description:
@@ -25,6 +27,7 @@ export class CreatePortfolioWithWeightBasedInput extends ValidationInput {
   public static validationSchema =
     joi.object<CreatePortfolioWithWeightBasedInput>({
       name: validateNameWithJoi.required(),
+      budget: validatePositiveNumberWithJoi.required(),
       transactions: joi
         .array()
         .items(TransactionByWeightBasedInput.validationSchema)

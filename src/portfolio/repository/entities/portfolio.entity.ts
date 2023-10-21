@@ -2,7 +2,6 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { IBaseEntity } from 'src/common/interfaces/base-entity.interface';
 import { validateName } from 'src/common/validation/strings/name/name.validator';
-import { validateSlug } from 'src/common/validation/strings/slug';
 import { IPortfolio } from 'src/portfolio/shared/portfolio.interface';
 
 @Schema({

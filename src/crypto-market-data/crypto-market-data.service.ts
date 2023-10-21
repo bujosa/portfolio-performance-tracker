@@ -4,6 +4,7 @@ import { CreateCryptoMarketDataInput } from './graphql/inputs/create-crypto-mark
 import { ICryptoMarketData } from './shared/crypto-market-data.interface';
 import { CryptoMarketDataRepository } from './repository/repositories/crypto-market-data.repository';
 import { UpdateCryptoMarketDataInput } from './graphql/inputs/update-crypto-market-data.input';
+import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 
 @Injectable()
 export class CryptoMarketDataService {
@@ -34,7 +35,7 @@ export class CryptoMarketDataService {
   }
 
   public async deleteEntity(
-    getOneEntityInput: Record<string, any>,
+    getOneEntityInput: GetEntityByIdInput,
   ): Promise<ICryptoMarketData> {
     return this.repository.deleteEntity(getOneEntityInput);
   }

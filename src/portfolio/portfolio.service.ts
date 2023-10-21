@@ -6,6 +6,7 @@ import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 import {
   CreatePortfolioInput,
   CreatePortfolioWithAmountBasedInput,
+  CreatePortfolioWithWeightBasedInput,
   UpdatePortfolioInput,
 } from './graphql/inputs';
 
@@ -34,6 +35,14 @@ export class PortfolioService {
   ): Promise<IPortfolio> {
     return this.repository.createEntityWithAmountBased(
       createPortfolioWithAmountBasedInput,
+    );
+  }
+
+  public async createEntityWithWeightBased(
+    createPortfolioWithWeightBasedInput: CreatePortfolioWithWeightBasedInput,
+  ): Promise<IPortfolio> {
+    return this.repository.createEntityWithWeightBased(
+      createPortfolioWithWeightBasedInput,
     );
   }
 

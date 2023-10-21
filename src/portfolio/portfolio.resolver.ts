@@ -8,7 +8,6 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Portfolio } from './graphql/types/portfolio.type';
-import { CreatePortfolioInput } from './graphql/inputs/create-portfolio.input';
 import {
   GraphQlFieldNames,
   graphQlIdArgOption,
@@ -16,11 +15,15 @@ import {
   FilterInput,
 } from 'src/common/graphql';
 import { PortfolioService } from './portfolio.service';
-import { UpdatePortfolioInput } from './graphql/inputs/update-portfolio.input';
 import { Transaction } from 'src/transaction/graphql/types/transaction.type';
 import { GraphQLRequestContext } from 'src/graphql';
 import { ValidateObjectIdPipe } from 'src/common/pipes/joi-id-validation.pipe';
-import { CreatePortfolioWithAmountBasedInput } from './graphql/inputs/create-portfolio-with-amount-based.input';
+import {
+  CreatePortfolioInput,
+  CreatePortfolioWithAmountBasedInput,
+  CreatePortfolioWithWeightBasedInput,
+  UpdatePortfolioInput,
+} from './graphql/inputs';
 
 @Resolver(() => Portfolio)
 export class PortfolioResolver {
@@ -85,6 +88,19 @@ export class PortfolioResolver {
     createPortfolioWithAmountBasedInput: CreatePortfolioWithAmountBasedInput,
   ): Promise<Portfolio> {
     return this.service.createEntityWithAmountBased(
+      createPortfolioWithAmountBasedInput,
+    );
+  }
+
+  @Mutation(() => Portfolio, {
+    description:
+      'This mutation creates a portfolio with a initial transactions based in weight and budget.',
+  })
+  public async createPortfolioWithWeightBased(
+    @Args(GraphQlFieldNames.INPUT_FIELD)
+    createPortfolioWithAmountBasedInput: CreatePortfolioWithWeightBasedInput,
+  ): Promise<Portfolio> {
+    return this.service.createEntityWithWeightBased(
       createPortfolioWithAmountBasedInput,
     );
   }

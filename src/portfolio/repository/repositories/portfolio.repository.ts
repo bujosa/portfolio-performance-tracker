@@ -20,6 +20,7 @@ import { GetEntityByIdInput } from 'src/common/graphql/get-entity-by-id.input';
 import {
   CreatePortfolioInput,
   CreatePortfolioWithAmountBasedInput,
+  CreatePortfolioWithWeightBasedInput,
   TransactionByAmountBasedInput,
   UpdatePortfolioInput,
 } from 'src/portfolio/graphql/inputs';
@@ -31,6 +32,7 @@ import {
   getTransactionsAndHistoricalDataObjects,
 } from 'src/portfolio/shared';
 import { CryptoMarketData } from 'src/crypto-market-data/repository/entities';
+import { TransactionByWeightBasedInput } from 'src/portfolio/graphql/inputs/transaction-weight-based';
 
 @Injectable()
 export class PortfolioRepository {
@@ -230,6 +232,70 @@ export class PortfolioRepository {
     }
   }
 
+  /**
+   * @description Create a portfolio with weight based transactions
+   * @param createEntityInput {@link CreatePortfolioWithWeightBasedInput}
+   * @param session
+   * @returns
+   */
+  public async createEntityWithWeightBased(
+    createEntityInput: CreatePortfolioWithWeightBasedInput,
+  ): Promise<Portfolio> {
+    const session = await this.entityModel.startSession(
+      transactionDefaultOptions,
+    );
+
+    const { name, transactions, budget } = createEntityInput;
+
+    try {
+      console.log(createEntityLog(this.entityName, createEntityInput));
+
+      const result = new this.entityModel({
+        createdAt: generateISODate(),
+        updatedAt: generateISODate(),
+        name,
+      });
+
+      const transactionsAndHistoricalDataObjects =
+        await this.getTransactionsAndHistoricalDataObjects(
+          transactions,
+          result._id,
+          budget,
+        );
+
+      await session.withTransaction(async () => {
+        await result.save({ session });
+
+        await Promise.all([
+          this.cryptoMarketDataModel.insertMany(
+            transactionsAndHistoricalDataObjects.historicalData,
+            { session },
+          ),
+          this.transactionModel.insertMany(
+            transactionsAndHistoricalDataObjects.transactions,
+            { session },
+          ),
+        ]);
+      });
+
+      return result;
+    } catch (error) {
+      console.error(`${JSON.stringify(error)}`);
+
+      if (error instanceof MongooseErrors.ValidationError) {
+        throw InvalidUserInputError.fromMongooseValidationError(error);
+      }
+
+      if (error.code === 11000) {
+        throw DuplicateKeyError.fromMongoDBDuplicateKeyError(error);
+      }
+
+      throw error;
+    } finally {
+      await session.endSession();
+    }
+  }
+
   public async updateEntity(
     updateEntityInput: UpdatePortfolioInput,
     session?: ClientSession,
@@ -308,13 +374,17 @@ export class PortfolioRepository {
   }
 
   private async getTransactionsAndHistoricalDataObjects(
-    transactions: TransactionByAmountBasedInput[],
+    transactions:
+      | TransactionByAmountBasedInput[]
+      | TransactionByWeightBasedInput[],
     portfolioId: Types.ObjectId,
+    budget?: number,
   ): Promise<TransactionAndHistoricalDataObjects> {
     return getTransactionsAndHistoricalDataObjects(
       transactions,
       portfolioId,
       this.configService.get(EnvKey.COINMARKETCAP_API_KEY),
+      budget,
     );
   }
 }
