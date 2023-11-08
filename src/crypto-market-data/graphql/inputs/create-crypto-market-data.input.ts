@@ -2,7 +2,6 @@ import { InputType, Field, Float } from '@nestjs/graphql';
 import { ValidationInput } from 'src/common/validation';
 import { validateNameWithJoi } from 'src/common/validation/strings/name/name.validator';
 import * as joi from 'joi';
-import { validatePositiveNumberWithJoi } from 'src/common/validation/number';
 import { validateISODateWithJoi } from 'src/common/validation/strings';
 
 @InputType()
@@ -51,11 +50,11 @@ export class CreateCryptoMarketDataInput extends ValidationInput {
 
   public static validationSchema = joi.object<CreateCryptoMarketDataInput>({
     cryptoName: validateNameWithJoi.required(),
-    open: validatePositiveNumberWithJoi.required(),
-    high: validatePositiveNumberWithJoi.required(),
-    low: validatePositiveNumberWithJoi.required(),
-    close: validatePositiveNumberWithJoi.required(),
-    marketCap: validatePositiveNumberWithJoi.required(),
+    open: joi.number().required(),
+    high: joi.number().required(),
+    low: joi.number().required(),
+    close: joi.number().required(),
+    marketCap: joi.number().required(),
     timestamp: validateISODateWithJoi('timeStamp').required(),
     date: validateISODateWithJoi('date').required(),
   });
